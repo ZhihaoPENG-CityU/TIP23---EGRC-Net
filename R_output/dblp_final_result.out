@@ -141,7 +141,6 @@ Z_:acc, nmi, ari
 0.7843
 0.4735
 0.5155
-
 The experimental results
 lambda_1:  0.01 lambda_2:  0.01 lambda_3:  0.1
 ################ iters10_kmeans_iter_Z   #####################
