@@ -1,4 +1,4 @@
-# reviewing---GACN
+# reviewing---PGFC-Net
 <!-- # Graph Augmentation Clustering Network -->
 + This work is being reviewed, we will release the code soon.
 
