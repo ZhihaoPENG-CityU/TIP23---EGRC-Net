@@ -1,10 +1,10 @@
-# reviewing---PGFC-Net
+# reviewing work
 <!-- # Graph Augmentation Clustering Network -->
 + This work is being reviewed, we will release the code soon.
 
 DOI:  
 
-URL: 
+URL: https://arxiv.org/abs/2211.10627
 
 VIDEO:  
 <!-- 
