@@ -1,7 +1,9 @@
+import math
 import torch
 import torch.nn.functional as F
 from torch.nn.parameter import Parameter
 from torch.nn.modules.module import Module
+
 
 class GNNLayer(Module):
     def __init__(self, in_features, out_features):

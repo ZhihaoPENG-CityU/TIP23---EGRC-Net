@@ -3,6 +3,69 @@ import scipy.sparse as sp
 import torch
 from torch.utils.data import Dataset
 import scipy.io as sio
+import torch.nn.functional as F
+import heapq
+import numpy as np
+from sklearn.metrics.pairwise import cosine_similarity
+device = torch.device("cuda")
+
+def adj_knn1(inputs):
+
+    idxs=[]
+    dists=[]
+    # [Consine]
+    try:
+        cosim = cosine_similarity(inputs, inputs) 
+        idx0=[(heapq.nlargest((2), range(len(i)), i.take)) for i in cosim]
+        idxs.extend(idx0)
+        # dists.extend([cosim[i][idx0[i]] for i in range(len(cosim))])
+
+        indices = np.array(idxs)
+        indices = indices[indices[:,0].argsort()]
+        indices_1 = indices[:,0]
+        indices_2 = indices
+        indices_1 = indices_1.repeat(1)
+        indices_2 = np.delete(indices_2, 0, axis=1)
+        indices_2 = indices_2.flatten()
+        re_indices = np.c_[indices_1,indices_2]
+
+        n, _ = inputs.shape
+        idx = np.array([i for i in range(n)], dtype=np.int32)
+        idx_map = {j: i for i, j in enumerate(idx)}
+        edges_unordered = re_indices # np.genfromtxt(path, dtype=np.int32)
+        edges = np.array(list(map(idx_map.get, edges_unordered.flatten())),
+                        dtype=np.int32).reshape(edges_unordered.shape)
+        adj = sp.coo_matrix((np.ones(edges.shape[0]), (edges[:, 0], edges[:, 1])),
+                            shape=(n, n), dtype=np.float32)
+
+        # build symmetric adjacency matrix
+        adj = adj + adj.T.multiply(adj.T > adj) - adj.multiply(adj.T > adj)
+        adj = adj + sp.eye(adj.shape[0])
+        adj = normalize(adj)
+        adj = sparse_mx_to_torch_sparse_tensor(adj)
+    except:
+        adj = sp.eye(inputs.shape[0])
+        adj = normalize(adj)
+        adj = sparse_mx_to_torch_sparse_tensor(adj)
+    return adj
+
+
+def dot_product(z):
+    adj_new = F.softmax(torch.mm(z, z.transpose(0, 1)), dim=1)
+    adj_new = adj_new.add(torch.eye(adj_new.shape[0]).to(device))
+    adj_new = normalize_adj_p2(adj_new)
+    return adj_new
+
+def normalize_adj_p2(mx):
+
+    rowsum = mx.sum(1)
+    r_inv_sqrt = torch.pow(rowsum, -0.5).flatten()
+    r_inv_sqrt[torch.isinf(r_inv_sqrt)] = 0.
+    r_mat_inv_sqrt = torch.diag(r_inv_sqrt)
+    mx = torch.matmul(mx, r_mat_inv_sqrt)
+    mx = torch.transpose(mx, 0, 1)
+    mx = torch.matmul(mx, r_mat_inv_sqrt)
+    return mx
 
 def load_graph(dataset, k):
     if k:
@@ -10,67 +73,78 @@ def load_graph(dataset, k):
     else:
         path = 'graph/{}_graph.txt'.format(dataset) 
 
-    if dataset == 'cite' or dataset =='hhar' or dataset =='reut':
+    if dataset == 'cite' or dataset =='hhar' or dataset =='reut' \
+        or dataset =='dblp_for_np' or dataset =='acm_for_np'or dataset =='usps_for_np'or dataset =='reut_for_np':
         data_cite = sio.loadmat('./data/{}.mat'.format(dataset))
         data = data_cite['fea']
     else:
         data = np.loadtxt('data/{}.txt'.format(dataset))
+        data = np.around(data,6)
+
+    if dataset == 'AIDS':
+        load_path = "./data/" + dataset + "/" + dataset
+        adj = sp.load_npz(load_path+"_adj.npz")
+    else:
+        n, _ = data.shape
+
+        idx = np.array([i for i in range(n)], dtype=np.int32)
+        idx_map = {j: i for i, j in enumerate(idx)}
+        edges_unordered = np.genfromtxt(path, dtype=np.int32)
+        edges = np.array(list(map(idx_map.get, edges_unordered.flatten())),dtype=np.int32).reshape(edges_unordered.shape)
+        
+        x1 = np.ones(edges.shape[0])
+        x2 = (edges[:, 0], edges[:, 1])
+        adj = sp.coo_matrix((x1, x2),
+                            shape=(n, n), dtype=np.float32)
+
+        # build symmetric adjacency matrix
+        adj = adj + adj.T.multiply(adj.T > adj) - adj.multiply(adj.T > adj)
+        adj = adj + sp.eye(adj.shape[0])
+
+        adj = normalize(adj)
     
-    n, _ = data.shape
-
-    idx = np.array([i for i in range(n)], dtype=np.int32)
-    idx_map = {j: i for i, j in enumerate(idx)}
-    edges_unordered = np.genfromtxt(path, dtype=np.int32)
-    edges = np.array(list(map(idx_map.get, edges_unordered.flatten())),
-                     dtype=np.int32).reshape(edges_unordered.shape)
-    adj = sp.coo_matrix((np.ones(edges.shape[0]), (edges[:, 0], edges[:, 1])),
-                        shape=(n, n), dtype=np.float32)
-
-    # build symmetric adjacency matrix
-    adj = adj + adj.T.multiply(adj.T > adj) - adj.multiply(adj.T > adj)
-    adj = adj + sp.eye(adj.shape[0])
-    adj = normalize(adj)
     adj = sparse_mx_to_torch_sparse_tensor(adj)
 
     return adj
 
-def norm_adj(adj):
-    adj = adj.detach().cpu().numpy()
-    adj = sp.coo_matrix(adj)
-    # build symmetric adjacency matrix
-    adj = adj + adj.T.multiply(adj.T > adj) - adj.multiply(adj.T > adj)
-    adj = adj + sp.eye(adj.shape[0])
-    adj = normalize(adj)
-    adj = sparse_mx_to_torch_sparse_tensor(adj)
-    return adj
-
-def comp_adj(path, data):
-    
-    n, _ = data.shape
-
-    idx = np.array([i for i in range(n)], dtype=np.int32)
-    idx_map = {j: i for i, j in enumerate(idx)}
-    edges_unordered = np.genfromtxt(path, dtype=np.int32)
-    edges = np.array(list(map(idx_map.get, edges_unordered.flatten())),
-                     dtype=np.int32).reshape(edges_unordered.shape)
-    adj = sp.coo_matrix((np.ones(edges.shape[0]), (edges[:, 0], edges[:, 1])),
-                        shape=(n, n), dtype=np.float32)
-
-    # build symmetric adjacency matrix
-    adj = adj + adj.T.multiply(adj.T > adj) - adj.multiply(adj.T > adj)
-    adj = adj + sp.eye(adj.shape[0])
-    adj = normalize(adj)
-    adj = sparse_mx_to_torch_sparse_tensor(adj)
-    return adj
 
 def normalize(mx):
-    """Row-normalize sparse matrix"""
     rowsum = np.array(mx.sum(1))
     r_inv = np.power(rowsum, -1).flatten()
     r_inv[np.isinf(r_inv)] = 0.
     r_mat_inv = sp.diags(r_inv)
     mx = r_mat_inv.dot(mx)
     return mx
+
+def normalize_adj(adj, self_loop=True, symmetry=False):
+
+    # add the self_loop
+    if self_loop:
+        adj_tmp = adj + np.eye(adj.shape[0])
+    else:
+        adj_tmp = adj
+
+    # calculate degree matrix and it's inverse matrix
+    d = np.diag(adj_tmp.sum(0))
+    d_inv = np.linalg.inv(d)
+
+    if symmetry:
+        sqrt_d_inv = np.sqrt(d_inv)
+        norm_adj = np.matmul(np.matmul(sqrt_d_inv, adj_tmp), adj_tmp)
+    else:
+        norm_adj = np.matmul(d_inv, adj_tmp)
+
+    return norm_adj
+
+def numpy_to_torch(a, sparse=False):
+
+    if sparse:
+        a = torch.sparse.Tensor(a)
+        a = a.to_sparse()
+    else:
+        a = torch.FloatTensor(a)
+    return a
+
 
 def sparse_mx_to_torch_sparse_tensor(sparse_mx):
     """Convert a scipy sparse matrix to a torch sparse tensor."""
@@ -84,13 +158,18 @@ def sparse_mx_to_torch_sparse_tensor(sparse_mx):
 class load_data(Dataset):
     def __init__(self, dataset):
 
-        if dataset == 'cite' or dataset =='hhar' or dataset =='reut':
+        if dataset == 'cite' or dataset =='hhar' or dataset =='reut' \
+            or dataset =='dblp_for_np' or dataset =='acm_for_np'or dataset =='usps_for_np'or dataset =='reut_for_np':
             data_cite = sio.loadmat('./data/{}.mat'.format(dataset))
             self.x = np.array(data_cite['fea'])
             self.x.astype(np.float64)
             self.y = np.array(data_cite['gnd'])
             self.y.astype(np.int64)
             self.y = self.y[:,-1]
+        elif dataset == 'amap' or dataset == 'pubmed':
+            load_path = "data/" + dataset + "/" + dataset
+            self.x = np.load(load_path+"_feat.npy", allow_pickle=True)
+            self.y = np.load(load_path+"_label.npy", allow_pickle=True)
         else:
             self.x = np.loadtxt('data/{}.txt'.format(dataset), dtype=float)
             self.y = np.loadtxt('data/{}_label.txt'.format(dataset), dtype=int)

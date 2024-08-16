@@ -27,7 +27,6 @@ def cluster_acc(y_true, y_pred):
     numclass2 = len(l2)
 
     if numclass1 != numclass2:
-        print('error')
         return 0, 0
 
     cost = np.zeros((numclass1, numclass2), dtype=int)
@@ -54,6 +53,7 @@ def cluster_acc(y_true, y_pred):
 
     acc = metrics.accuracy_score(y_true, new_predict)
     f1_macro = metrics.f1_score(y_true, new_predict, average='macro')
+
     return acc, f1_macro
 
 
@@ -61,8 +61,4 @@ def eva(y_true, y_pred, epoch=0):
     acc, f1 = cluster_acc(y_true, y_pred)
     nmi = nmi_score(y_true, y_pred, average_method='arithmetic')
     ari = ari_score(y_true, y_pred)
-
-    print(epoch, ':acc {:.4f}'.format(acc), ', nmi {:.4f}'.format(nmi), ', ari {:.4f}'.format(ari),
-            ', f1 {:.4f}'.format(f1))
-    
     return acc,nmi,ari,f1
