@@ -1,1 +1,1 @@
-+ The file of storing the output results
++ The file stores the output results
