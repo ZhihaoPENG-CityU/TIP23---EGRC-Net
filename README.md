@@ -49,7 +49,7 @@ We appreciate it if you use this code and cite our related papers, which can be 
 + Step 2: python EGRC-Net.py
 
 * For example, if u would like to run AGCN on the DBLP dataset, u need to
-* first set {0.01, 0.01, 0.1} for USPS;
+* first set {0.01, 0.1, 0.1} for DBLP;
 * then run the command "python main_DBLP.py"
 
 # Data
