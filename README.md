@@ -2,11 +2,10 @@
  # Graph Augmentation Clustering Network 
 + This work is being reviewed, we will release the code soon. -->
 
-DOI:  
+DOI: https://ieeexplore.ieee.org/abstract/document/10326461
 
 URL: https://arxiv.org/abs/2211.10627
 
-VIDEO:  
 <!-- 
 We appreciate it if you use this code and cite our paper, which can be cited as follows,
 > @inproceedings{peng2021attention, <br>
