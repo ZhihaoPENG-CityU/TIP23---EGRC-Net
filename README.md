@@ -6,16 +6,36 @@ DOI: https://ieeexplore.ieee.org/abstract/document/10326461
 
 URL: https://arxiv.org/abs/2211.10627
 
-<!-- 
-We appreciate it if you use this code and cite our paper, which can be cited as follows,
+We have added comments in the code, and the specific details can correspond to the explanation in the paper. Please get in touch with me (zhihapeng3-c@my.cityu.edu.hk) if you have any issues.
+
+We appreciate it if you use this code and cite our related papers, which can be cited as follows,
+
+> @article{peng2023egrc, <br>
+>   title={EGRC-Net: Embedding-Induced Graph Refinement Clustering Network}, <br>
+>   author={Peng, Zhihao and Liu, Hui and Jia, Yuheng and Hou, Junhui},  <br>
+>   journal={IEEE Transactions on Image Processing}, <br>
+>   volume={32}, <br>
+>   pages={6457--6468}, <br>
+>   year={2023}, <br>
+>   publisher={IEEE}
+> } <br>
+
+> @article{peng2022deep, <br>
+>   title={Deep Attention-guided Graph Clustering with Dual Self-supervision}, <br>
+>   author={Peng, Zhihao and Liu, Hui and Jia, Yuheng and Hou, Junhui},  <br>
+>   journal={IEEE Transactions on Circuits and Systems for Video Technology},  <br>
+>   year={2022}, <br>
+>   publisher={IEEE}
+> } <br>
+
 > @inproceedings{peng2021attention, <br>
->   title={Attention-driven Graph Clustering Network}, <br>
+>   title={Attention-driven graph clustering network}, <br>
 >   author={Peng, Zhihao and Liu, Hui and Jia, Yuheng and Hou, Junhui},  <br>
 >   booktitle={Proceedings of the 29th ACM International Conference on Multimedia},  <br>
->   pages={935--943}, <br>
+>   pages={935--943},  <br>
 >   year={2021}
 > } <br>
- -->
+
 # Environment
 + Python[3.7.9]
 + Pytorch[1.7.1]
