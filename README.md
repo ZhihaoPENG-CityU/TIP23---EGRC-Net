@@ -26,9 +26,9 @@ We appreciate it if you use this code and cite our paper, which can be cited as 
 
 # To run code
 + Step 1: set the hyperparameters for the specific dataset;
-+ Step 2: python main_XXX.py
++ Step 2: python EGRC-Net.py
 + 
-* For examle, if u would like to run AGCN on the DBLP dataset, u need to
+* For example, if u would like to run AGCN on the DBLP dataset, u need to
 * first set {0.01, 0.01, 0.1} for USPS;
 * then run the command "python main_DBLP.py"
 
