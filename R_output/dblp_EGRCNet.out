@@ -1,22 +1,6 @@
 The experimental results
 lambda_1:  0.01 lambda_2:  0.1 lambda_3:  0.1
 ################ iters10_ACC_iter_Z   #####################
-Z_ACC mean 0.79049 max 0.79049 
- [0.79049]
-Z_NMI mean 0.48349 max 0.48349 
- [0.48349]
-Z_ARI mean 0.53228 max 0.53228 
- [0.53228]
-Z_F1 mean 0.7859 max 0.7859 
- [0.7859]
-Z_:acc, nmi, ari, f1: 
-0.7905
-0.4835
-0.5323
-0.7859
-The experimental results
-lambda_1:  0.01 lambda_2:  0.1 lambda_3:  0.1
-################ iters10_ACC_iter_Z   #####################
 Z_ACC mean 0.79172 max 0.79172 
  [0.79172]
 Z_NMI mean 0.4836 max 0.4836 
