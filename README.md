@@ -1,7 +1,7 @@
 <!--# reviewing work
  # Graph Augmentation Clustering Network 
 + This work is being reviewed, we will release the code soon. -->
-This work EGRC-Net has been accepted by IEEE Transactions on Image Processing
+This work EGRC-Net has been accepted by IEEE Transactions on Image Processing.
 
 DOI: https://ieeexplore.ieee.org/abstract/document/10326461
 
