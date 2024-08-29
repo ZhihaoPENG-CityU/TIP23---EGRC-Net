@@ -48,10 +48,7 @@ We appreciate it if you use this code and cite our related papers, which can be 
 # To run code
 + Step 1: set the hyperparameters for the specific dataset;
 + Step 2: python EGRC-Net.py
-
-* For example, if u would like to run AGCN on the DBLP dataset, u need to
-* first set {0.01, 0.1, 0.1} for DBLP;
-* then run the command "python main_DBLP.py"
+* For example, if u would like to run AGCN on the DBLP dataset, u need to first set {0.01, 0.1, 0.1} for DBLP; then run the command "python main_DBLP.py"
 
 * To obtain the pre-trained weights of AE, you can modify the provided primary model to keep the AE module solely. For your convenience, I have followed the above process and given a pretrain.py code that pre-trains AE for another dataset.
 
