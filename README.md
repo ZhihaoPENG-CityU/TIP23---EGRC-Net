@@ -53,5 +53,7 @@ We appreciate it if you use this code and cite our related papers, which can be 
 * first set {0.01, 0.1, 0.1} for DBLP;
 * then run the command "python main_DBLP.py"
 
+* To obtain the pre-trained weights of AE, you can modify the provided primary model to keep the AE module solely. For your convenience, I have followed the above process and given a pretrain.py code that pre-trains AE for another dataset.
+
 # Data
 Due to the limitation of GitHub, we share the data in [<a href="https://drive.google.com/drive/folders/1l8H662Yj5Cn6Af2EsgxhojYYmGY2_ASE?usp=sharing">here</a>].
